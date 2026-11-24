@@ -1,0 +1,522 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using TechXpress.Data.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var profileUrl = User?.FindFirst("ProfilePictureUrl")?.Value ?? "/images/download.jpeg";
+
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TechXpress.Web</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TechXpress.Web.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/stars.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/account.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Ai.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/chatbot.css" asp-append-version="true" />
+
+
+
+
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary shadow-sm" style=" background-color: currentcolor;">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-laptop-code me-2"></i>
+                    <span class="fw-bold">TechXpress</span>
+                </a>
+
+                <!-- Mobile Toggle -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbarOffcanvas" aria-controls="navbarOffcanvas">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Desktop Menu -->
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i> Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Products" asp-action="Index">
+                                <i class="fas fa-box-open me-1"></i> Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Category" asp-action="Index">
+                                <i class="fas fa-tags me-1"></i> Categories
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Orders" asp-action="Index">
+                                <i class="fas fa-clipboard-list me-1"></i> Orders
+                            </a>
+                        </li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user-shield me-1"></i> Admin Panel
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+                                    <li>
+                                        <a class="dropdown-item @(ViewContext.RouteData.Values["controller"].ToString() == "Dashboard" ? "active" : "")"
+                                        asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item @(ViewContext.RouteData.Values["controller"].ToString() == "CategoryManagement" ? "active" : "")"
+                                        asp-area="Admin" asp-controller="CategoryManagement" asp-action="Index">
+                                            <i class="fas fa-tags me-2"></i> Categories
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item @(ViewContext.RouteData.Values["controller"].ToString() == "ProductsManagement" ? "active" : "")"
+                                        asp-area="Admin" asp-controller="ProductsManagement" asp-action="Index">
+                                            <i class="fas fa-boxes me-2"></i> Products
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    @if (SignInManager.IsSignedIn(User))
+                                    {
+
+                                        <li>
+                                            <a class="dropdown-item @(ViewContext.RouteData.Values["controller"].ToString() == "OrderManagement" ? "active" : "")"
+                                            asp-area="Admin" asp-controller="OrderManagement" asp-action="Index">
+                                                <i class="fas fa-shopping-cart me-2"></i> Orders
+                                            </a>
+                                        </li>
+                                    }
+
+                                    <li>
+                                        <a class="dropdown-item @(ViewContext.RouteData.Values["controller"].ToString() == "CustomerManagement" ? "active" : "")"
+                                           asp-area="Admin" asp-controller="CustomerManagement" asp-action="Index">
+                                            <i class="fas fa-users me-2"></i> Customers
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item @(ViewContext.RouteData.Values["controller"].ToString() == "UserRoleManagement" ? "active" : "")"
+                                           asp-area="Admin" asp-controller="UserRoleManagement" asp-action="Index">
+                                            <i class="fas fa-user-shield me-2"></i> Roles & Permissions
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item @(ViewContext.RouteData.Values["controller"].ToString() == "ReportManagement" ? "active" : "")"
+                                           asp-area="Admin" asp-controller="Report" asp-action="Index">
+                                            <i class="fas fa-chart-line me-2"></i> Reports
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+
+                                    <li>
+                                        <a class="dropdown-item @(ViewContext.RouteData.Values["controller"].ToString() == "PaymentManagement" ? "active" : "")"
+                                           asp-area="Admin" asp-controller="PaymentManagement" asp-action="Index">
+                                            <i class="fas fa-credit-card me-2"></i> Payments
+                                        </a>
+                                    </li>
+                                   
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+
+                    <!-- User Area -->
+                    <div class="d-flex align-items-center">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <!-- Cart with badge -->
+                            <a class="btn btn-icon btn-outline-light position-relative me-3" asp-controller="Cart" asp-action="Index">
+                                <i class="fas fa-shopping-cart"></i>
+                            </a>
+
+                            <!-- User Dropdown -->
+                            <div class="dropdown">
+                                <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div class="avatar-sm me-2">
+                                        <div class="avatar-title bg-white text-primary rounded-circle">
+                                        </div>
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <span>@UserManager.GetUserName(User)</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Manage">
+                                            <i class="fas fa-user-cog me-2"></i> Manage Account
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form class="form-inline" asp-controller="Account" asp-action="Logout" method="post">
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-light me-2" asp-controller="Account" asp-action="Login">
+                                <i class="fas fa-sign-in-alt me-1"></i> Login
+                            </a>
+                            <a class="btn btn-light" asp-controller="Account" asp-action="Register">
+                                <i class="fas fa-user-plus me-1"></i> Register
+                            </a>
+                        }
+                    </div>
+                    <img src="@profileUrl" alt="Profile" class="rounded-circle"
+                    style="width: 40px; height: 40px; margin-left: 10px; object-fit: cover; display: block; margin-right: auto; margin-left: auto;" />
+
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Offcanvas Menu -->
+    <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="navbarOffcanvas" aria-labelledby="navbarOffcanvasLabel">
+        <div class="offcanvas-header border-bottom border-secondary">
+            <h5 class="offcanvas-title" id="navbarOffcanvasLabel">
+                <i class="fas fa-laptop-code me-2"></i> TechXpress
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" asp-controller="Home" asp-action="Index">
+                        <i class="fas fa-home me-2"></i> Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Products" asp-action="Index">
+                        <i class="fas fa-box-open me-2"></i> Products
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Category" asp-action="Index">
+                        <i class="fas fa-tags me-2"></i> Categories
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Orders" asp-action="Index">
+                        <i class="fas fa-clipboard-list me-2"></i> Orders
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Cart" asp-action="Index">
+                        <i class="fas fa-shopping-cart me-2"></i> Cart
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Account" asp-action="Manage">
+                        <i class="fas fa-user-cog me-2"></i> Manage Account
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="Privacy">
+                        <i class="fas fa-shield-alt me-2"></i> Privacy
+                    </a>
+                </li>
+            </ul>
+
+            <div class="mt-auto pt-3 border-top border-secondary">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="avatar-sm me-3">
+                            <div class="avatar-title bg-primary text-white rounded-circle">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="fw-bold">@UserManager.GetUserName(User)</div>
+                            <small class="text-muted">Logged In</small>
+                        </div>
+                    </div>
+
+                    <form class="form-inline" asp-controller="Account" asp-action="Logout" method="post">
+                        <button type="submit" class="btn btn-outline-light w-100">
+                            <i class="fas fa-sign-out-alt me-1"></i> Logout
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <div class="d-grid gap-2">
+                        <a class="btn btn-primary" asp-controller="Account" asp-action="Login">
+                            <i class="fas fa-sign-in-alt me-1"></i> Login
+                        </a>
+                        <a class="btn btn-outline-primary" asp-controller="Account" asp-action="Register">
+                            <i class="fas fa-user-plus me-1"></i> Register
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+            @await Html.PartialAsync("_ChatBot")
+        </main>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-auto">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5 class="text-uppercase fw-bold mb-3">
+                        <i class="fas fa-laptop-code me-2"></i> TechXpress
+                    </h5>
+                    <p>Your one-stop shop for all tech needs. Quality products, fast delivery, and excellent customer service.</p>
+                    <div class="social-icons">
+                        <a href="#" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-2 mb-4 mb-md-0">
+                    <h5 class="text-uppercase fw-bold mb-3">Shop</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a asp-controller="Products" asp-action="Index" class="text-white-50">Products</a></li>
+                        <li class="mb-2"><a asp-controller="Category" asp-action="Index" class="text-white-50">Categories</a></li>
+                        <li class="mb-2"><a asp-controller="Cart" asp-action="Index" class="text-white-50">Cart</a></li>
+                        <li class="mb-2"><a asp-controller="Orders" asp-action="Index" class="text-white-50">Orders</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4 mb-md-0">
+                    <h5 class="text-uppercase fw-bold mb-3">Company</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a asp-controller="Home" asp-action="Index" class="text-white-50">About Us</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50">Careers</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50">Blog</a></li>
+                        <li class="mb-2"><a asp-controller="Home" asp-action="Privacy" class="text-white-50">Privacy</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="text-uppercase fw-bold mb-3">Newsletter</h5>
+                    <p>Subscribe to our newsletter for the latest updates and offers.</p>
+                    <form class="mb-3">
+                        <div class="input-group">
+                            <input type="email" class="form-control" placeholder="Your email" aria-label="Your email">
+                            <button class="btn btn-primary" type="button">Subscribe</button>
+                        </div>
+                    </form>
+                    <p class="small mb-0">
+                        <i class="fas fa-phone-alt me-2"></i> +1 (555) 123-4567
+                    </p>
+                    <p class="small mb-0">
+                        <i class="fas fa-envelope me-2"></i> info@techxpress.com
+                    </p>
+                </div>
+            </div>
+            <hr class="my-4 border-secondary">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="small mb-0">&copy; 2025 TechXpress. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <img src="~/images/payment-methods.jpeg" alt="Payment methods" class="img-fluid" style="max-height: 30px;">
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- ✅ Scripts at the end for performance -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+
+    <script src="~/js/products.js" asp-append-version="true"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Toggle chatbot visibility
+            $('.ai-chatbot-toggle').click(function() {
+                $('.ai-chatbot-window').toggle('fast');
+                $(this).toggleClass('btn-primary btn-secondary');
+            });
+
+            // Close chatbot
+            $('.close-chatbot').click(function() {
+                $('.ai-chatbot-window').hide('fast');
+                $('.ai-chatbot-toggle').removeClass('btn-secondary').addClass('btn-primary');
+            });
+
+            // Handle sending messages
+            $('.send-message').click(sendMessage);
+            $('.chatbot-input').keypress(function(e) {
+                if (e.which === 13) { // Enter key
+                    sendMessage();
+                }
+            });
+
+            // Suggested questions
+            $('.suggested-question').click(function(e) {
+                e.preventDefault();
+                const question = $(this).text();
+                $('.chatbot-input').val(question);
+                sendMessage();
+            });
+
+            function sendMessage() {
+                const input = $('.chatbot-input');
+                const message = input.val().trim();
+
+                if (message === '') return;
+
+                // Add user message to chat
+                addMessage(message, 'user');
+                input.val('');
+
+                // Show typing indicator
+                const typingIndicator = $('<div class="bot-message message typing-indicator">')
+                    .html('<span></span><span></span><span></span>')
+                    .appendTo('.chatbot-messages');
+
+                // Scroll to bottom
+                $('.chatbot-messages').scrollTop($('.chatbot-messages')[0].scrollHeight);
+
+                // Send to AI service
+                $.post('/Test/RespondToCustomerQuery', { query: message })
+                    .done(function(response) {
+                        typingIndicator.remove();
+                        addMessage(response, 'bot');
+                    })
+                    .fail(function() {
+                        typingIndicator.remove();
+                        addMessage("Sorry, I'm having trouble connecting to the service. Please try again later.", 'bot');
+                    });
+            }
+
+            function addMessage(text, sender) {
+                const messageClass = sender === 'user' ? 'user-message' : 'bot-message';
+                const messageElement = $('<div class="message ' + messageClass + '">')
+                    .text(text)
+                    .hide()
+                    .appendTo('.chatbot-messages');
+
+                messageElement.fadeIn('fast');
+                $('.chatbot-messages').scrollTop($('.chatbot-messages')[0].scrollHeight);
+            }
+        });
+    </script>
+    
+    <script>
+        $(document).ready(function() {
+                    // 1. Close via Close Button
+        $('[data-dismiss="modal"]').click(function() {
+            aiDescriptionModal.modal('hide');
+        });
+
+        // 2. Close via Escape Key
+        $(document).keydown(function(e) {
+            if (e.key === "Escape" && aiDescriptionModal.hasClass('show')) {
+                aiDescriptionModal.modal('hide');
+            }
+        });
+
+        // 3. Close by Clicking Outside Modal
+        aiDescriptionModal.click(function(event) {
+            if ($(event.target).is('.modal')) {
+                aiDescriptionModal.modal('hide');
+            }
+        });
+
+        // 4. Programmatic Close (if needed elsewhere)
+        window.closeAIModal = function() {
+            aiDescriptionModal.modal('hide');
+        };
+
+
+
+            // AI Description Button Click Handler
+            $('.ai-description-btn').click(function() {
+                const productId = $(this).data('product-id');
+                $('#aiDescriptionModal').modal('show');
+
+                // Load AI description
+                $.get('/Test/GenerateProductDescription', { Id: productId })
+                    .done(function(data) {
+                        $('#aiDescriptionContent').html('<div class="ai-generated-content">' +
+                            data.replace(/\n/g, '<br>') + '</div>');
+                    })
+                    .fail(function() {
+                        $('#aiDescriptionContent').html(
+                            '<div class="alert alert-danger">Failed to generate description. Please try again.</div>'
+                        );
+                    });
+            });
+
+            // Reset modal content when closed
+            $('#aiDescriptionModal').on('hidden.bs.modal', function() {
+                $('#aiDescriptionContent').html(
+                    '<div class="text-center">' +
+                    '   <div class="spinner-border text-primary" role="status">' +
+                    '       <span class="sr-only">Loading...</span>' +
+                    '   </div>' +
+                    '   <p>Generating AI description...</p>' +
+                    '</div>'
+                );
+            });
+        });
+    </script>
+	<script>
+		$(function () {
+			// Initialize tooltips
+			$('[data-toggle="tooltip"]').tooltip();
+			// Initialize datepicker
+			$("#datepicker").datepicker();
+		});
+		// Toastr notifications
+		@if (TempData["SuccessMessage"] != null)
+		{
+			<text>toastr.success('@TempData["SuccessMessage"]');</text>
+		}
+		@if (TempData["ErrorMessage"] != null)
+		{
+			<text>toastr.error('@TempData["ErrorMessage"]');</text>
+		}
+        </script>
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+
+    @await RenderSectionAsync("Styles", required: false)
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>
