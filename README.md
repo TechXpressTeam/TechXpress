@@ -3,8 +3,7 @@
 ## 🌟 Overview
 TechXpress is a sophisticated e-commerce platform built with ASP.NET Core MVC (.NET 8.0), offering a modern shopping experience for technology and electronics products with AI-powered features.
 
-🎥 **Project Demo**  
-Watch the demo here: [YouTube Video](https://youtu.be/bY3F1Ea-RPE?si=mVztbbadxhp0B0dY)
+
 
 ## 🚀 Core Features
 
@@ -112,7 +111,7 @@ TechXpress/
 ### Installation
 1. Clone the repository
 ```bash
-git clone https://github.com/eng-yossef/TechXpress.git
+git clone https://github.com/TechXpressTeam/TechXpress.git
 ```
 
 2. Update database connection in `appsettings.json`
@@ -167,8 +166,8 @@ Set private credentials locally with .NET user-secrets or environment variables 
 
 ## 📞 Contact
 For support or inquiries:
-- Email: yossefkhaled551@gmail.com
-- Phone: 01150648044
+- Email: ma644064@gmail.com
+- Phone: 01552407909
 
 ---
 Built with ❤️ by the TechXpress Team
