@@ -1,0 +1,345 @@
+﻿@model IEnumerable<TechXpress.Data.Models.Category>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Categories Management";
+}
+
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <h2>@ViewData["Title"]</h2>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="fas fa-plus-circle"></i> Create New
+    </a>
+</div>
+
+<!-- Filter Card -->
+<div class="card mb-4 shadow-sm">
+    <div class="card-header bg-light">
+        <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filters</h5>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <!-- Name Search -->
+            <div class="col-md-4">
+                <label for="nameFilter" class="form-label">Category Name</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="nameFilter" placeholder="Search by name">
+                    <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Status Filter -->
+            <div class="col-md-3">
+                <label for="statusFilter" class="form-label">Status</label>
+                <select class="form-select" id="statusFilter">
+                    <option value="">All Statuses</option>
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+            </div>
+
+            <!-- Product Count Range -->
+            <div class="col-md-3">
+                <label for="productCountFilter" class="form-label">Product Count</label>
+                <select class="form-select" id="productCountFilter">
+                    <option value="">All</option>
+                    <option value="none">No Products</option>
+                    <option value="some">1-10 Products</option>
+                    <option value="many">10+ Products</option>
+                </select>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="col-md-2 d-flex align-items-end">
+                <button id="resetFilters" class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-times me-2"></i>Reset
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">Category List</h4>
+        <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-download"></i> Export
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown">
+                <li><a class="dropdown-item" href="#" id="export-csv"><i class="fas fa-file-csv"></i> CSV</a></li>
+                <li><a class="dropdown-item" href="#" id="export-excel"><i class="fas fa-file-excel"></i> Excel</a></li>
+                <li><a class="dropdown-item" href="#" id="export-pdf"><i class="fas fa-file-pdf"></i> PDF</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table id="categoriesTable" class="table table-hover" style="width:100%">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Slug</th>
+                            <th>Products</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var category in Model.OrderBy(c => c.DisplayOrder).ThenBy(c => c.Name))
+                        {
+                            <tr data-name="@category.Name.ToLower()"
+                                data-status="@category.IsActive.ToString().ToLower()"
+                                data-product-count="@category.ProductCount">
+                                <td data-order="@category.DisplayOrder">@category.DisplayOrder</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(category.ImageUrl))
+                                    {
+                                        <img src="@category.ImageUrl" alt="@category.Name"
+                                             class="category-thumbnail"
+                                             data-bs-toggle="modal"
+                                             data-bs-target="#imageModal"
+                                             data-image="@category.ImageUrl" />
+                                    }
+                                    else
+                                    {
+                                        <div class="no-image-placeholder">
+                                            <i class="fas fa-folder"></i>
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <span class="fw-bold">@category.Name</span>
+                                        @if (!string.IsNullOrEmpty(category.Description))
+                                        {
+                                            <small class="text-muted text-truncate" style="max-width: 200px;"
+                                                   title="@Html.Raw(System.Net.WebUtility.HtmlEncode(category.Description))">
+                                                @Html.Raw(category.Description.Length > 50 ?
+                                                         System.Net.WebUtility.HtmlEncode(category.Description.Substring(0, 50)) + "..." :
+                                                         System.Net.WebUtility.HtmlEncode(category.Description))
+                                            </small>
+                                        }
+                                    </div>
+                                </td>
+                                <td>@category.Slug</td>
+                                <td>
+                                    <span class="badge bg-info rounded-pill">@category.ProductCount</span>
+                                </td>
+                                <td>
+                                    <span class="badge @(category.IsActive ? "bg-success" : "bg-secondary")">
+                                        @(category.IsActive ? "Active" : "Inactive")
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a asp-action="Details" asp-route-id="@category.Id"
+                                           class="btn btn-outline-info" title="Details">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@category.Id"
+                                           class="btn btn-outline-primary" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@category.Id"
+                                           class="btn btn-outline-danger" title="Delete"
+                                           onclick="return confirm('Are you sure you want to delete this category?')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- No results message (initially hidden) -->
+            <div id="noResults" class="alert alert-info mt-3" style="display: none;">
+                No categories match your filters.
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info text-center py-4">
+                <div class="py-3">
+                    <i class="fas fa-folder-open fa-3x text-primary mb-3"></i>
+                    <h4>No Categories Found</h4>
+                    <p class="text-muted">Get started by creating your first category</p>
+                    <a asp-action="Create" class="btn btn-primary mt-2">
+                        <i class="fas fa-plus"></i> Create Category
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="card-footer d-flex justify-content-between align-items-center">
+            <div class="text-muted small">
+                Showing <strong>@Model.Count()</strong> categories
+            </div>
+            <a asp-controller="Dashboard" asp-action="Index" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    }
+</div>
+
+<!-- Image Preview Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Category Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" class="img-fluid" alt="Category Image">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .category-thumbnail {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+            .category-thumbnail:hover {
+                transform: scale(1.1);
+            }
+
+        .no-image-placeholder {
+            width: 40px;
+            height: 40px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #adb5bd;
+        }
+
+        .badge.rounded-pill {
+            padding-right: 0.6em;
+            padding-left: 0.6em;
+        }
+
+        .table td, .table th {
+            vertical-align: middle;
+        }
+
+        .btn-group-sm > .btn {
+            padding: 0.25rem 0.5rem;
+        }
+
+        .filter-card {
+            margin-bottom: 1.5rem;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Image modal functionality
+            $('#imageModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var imageUrl = button.data('image');
+                $('#modalImage').attr('src', imageUrl);
+                $('#imageModalLabel').text(button.attr('alt') + ' Image');
+            });
+
+            // Filter function
+            function filterCategories() {
+                const nameFilter = $('#nameFilter').val().toLowerCase();
+                const statusFilter = $('#statusFilter').val();
+                const productCountFilter = $('#productCountFilter').val();
+
+                let hasResults = false;
+
+                $('#categoriesTable tbody tr').each(function() {
+                    const name = $(this).data('name');
+                    const status = $(this).data('status');
+                    const productCount = parseInt($(this).data('product-count'));
+
+                    // Check filters
+                    const nameMatch = name.includes(nameFilter) || nameFilter === '';
+                    const statusMatch = statusFilter === '' || status === statusFilter.toLowerCase();
+
+                    let productCountMatch = true;
+                    if (productCountFilter === 'none') productCountMatch = productCount === 0;
+                    else if (productCountFilter === 'some') productCountMatch = productCount > 0 && productCount <= 10;
+                    else if (productCountFilter === 'many') productCountMatch = productCount > 10;
+
+                    if (nameMatch && statusMatch && productCountMatch) {
+                        $(this).show();
+                        hasResults = true;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                // Show/hide no results message
+                if (!hasResults) {
+                    $('#noResults').show();
+                } else {
+                    $('#noResults').hide();
+                }
+            }
+
+            // Event listeners
+            $('#nameFilter, #statusFilter, #productCountFilter').on('change keyup', filterCategories);
+
+            $('#clearSearch').click(function() {
+                $('#nameFilter').val('');
+                filterCategories();
+            });
+
+            $('#resetFilters').click(function() {
+                $('#nameFilter').val('');
+                $('#statusFilter').val('');
+                $('#productCountFilter').val('');
+                filterCategories();
+            });
+
+            // Initialize DataTable for sorting (without search/filtering)
+            $('#categoriesTable').DataTable({
+                dom: '<"top"<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>>rt<"bottom"<"clear">>',
+                responsive: true,
+                columnDefs: [
+                    { orderable: false, targets: [1, 6] } // Image and Actions columns
+                ],
+                searching: false, // We use our custom filtering
+                info: false,     // We show our own count
+                paging: false     // We'll handle pagination if needed
+            });
+
+            // Initial filter check if any filters are set
+            if ($('#nameFilter').val() || $('#statusFilter').val() || $('#productCountFilter').val()) {
+                filterCategories();
+            }
+        });
+    </script>
+}

@@ -1,310 +1,174 @@
-# 🛒 TechXpress — E-Commerce Platform
+# TechXpress - E-Commerce Platform
 
-<p align="center">
-  <strong>A Modern Electronics Shopping Experience Built with ASP.NET Core</strong>
-</p>
+## 🌟 Overview
+TechXpress is a sophisticated e-commerce platform built with ASP.NET Core MVC (.NET 8.0), offering a modern shopping experience for technology and electronics products with AI-powered features.
 
-<p align="center">
-  An academic team project focused on building a scalable, maintainable, and secure e-commerce platform for electronics.
-</p>
+🎥 **Project Demo**  
+Watch the demo here: [YouTube Video](https://youtu.be/bY3F1Ea-RPE?si=mVztbbadxhp0B0dY)
 
----
+## 🚀 Core Features
 
-## 📌 Project Overview
+### 💻 Customer Features
+- **Product Management**
+  - Advanced product search and filtering 
+  - Category-based navigation
+  - Product specifications
+  - Rating and review system
+  - Product image galleries
+  - Related products suggestions
 
-**TechXpress** is a web-based e-commerce platform designed to simplify buying and selling electronic products, including laptops, smartphones, cameras, and accessories.
+- **Shopping Experience**
+  - Secure shopping cart
+  - Wishlist functionality
+  - Real-time stock updates
+  - Multiple payment methods
+  - Order tracking
+  - Email notifications
 
-The platform allows customers to browse products, search and filter listings, manage shopping carts, place orders, and make payments. Administrators can manage products, categories, orders, and inventory through a dedicated admin dashboard.
+- **User Account**
+  - Profile management
+  - Address book
+  - Order history
+  - Review management
+  - Secure authentication
 
-The application follows **N-Tier Architecture** and uses the Repository Pattern, Unit of Work Pattern, and Dependency Injection to improve maintainability, testability, and separation of concerns.
+### 👨‍💼 Admin Features
+- **Dashboard**
+  - Sales analytics
+  - Customer insights
+  - Inventory tracking
+  - Performance metrics
 
-## 🎯 Project Objectives
+- **Product Management**
+  - Product CRUD operations
+  - Category management
+  - Inventory control
+  - Price management
+  - Image handling
 
-- Build a responsive and user-friendly electronics store.
-- Apply N-Tier Architecture for clear separation of responsibilities.
-- Implement the Repository and Unit of Work patterns.
-- Provide secure authentication and role-based authorization.
-- Develop shopping cart and order management functionality.
-- Integrate Stripe for payment processing.
-- Build an administrative dashboard for managing products, categories, and orders.
-- Deploy the application to a cloud hosting platform.
+- **Order Management**
+  - Order processing
+  - Status updates
+  - Payment tracking
+  - Shipping integration
 
-## 🛠️ Technology Stack
+### 🤖 AI Features
+- AI-powered product descriptions
+- Customer sentiment analysis
+- Personalized promotions
+- Inventory predictions
+- Smart chatbot assistant
 
-| Technology | Purpose |
-|---|---|
-| ASP.NET Core MVC | Web application and presentation layer |
-| C# | Application programming language |
-| Entity Framework Core | ORM and database access |
-| ASP.NET Core Identity | Authentication and user management |
-| SQL Server | Relational database |
-| Stripe | Payment processing |
-| Bootstrap | Responsive UI design |
-| jQuery | Client-side interactions |
-| DataTables | Admin data management |
-| Toastr / Toaster JS | User notifications |
-| Microsoft Azure / Hostinger | Deployment and hosting |
-| Git & GitHub | Version control and team collaboration |
+## 🛠️ Technical Architecture
 
-## 🏗️ System Architecture
+### Technology Stack
+- **Backend**
+  - ASP.NET Core MVC (.NET 8.0)
+  - Entity Framework Core
+  - SQL Server
+  - Identity Framework
 
-The project uses a three-layer architecture.
+- **Frontend**
+  - Bootstrap 5
+  - jQuery
+  - JavaScript
+  - AJAX
+  - Font Awesome
 
-```text
-TechXpress
-│
-├── TechXpress.Web
-│   ├── Controllers
-│   ├── Views
-│   ├── ViewModels
-│   └── wwwroot
-│
-├── TechXpress.Services
-│   ├── Interfaces
-│   ├── Services
-│   └── Business Logic
-│
-└── TechXpress.Data
-    ├── Entities
-    ├── ApplicationDbContext
-    ├── Repositories
-    └── UnitOfWork
+- **Additional Tools**
+  - Stripe Payment Integration
+  - Toastr Notifications
+  - CKEditor
+  - DataTables
+
+### Project Structure
 ```
-
-### 1. Presentation Layer — TechXpress.Web
-
-Responsible for:
-- MVC controllers and Razor views.
-- Product browsing and search.
-- Shopping cart and checkout interfaces.
-- Customer profiles.
-- Admin dashboard.
-- Client-side interactions and validation.
-
-### 2. Business Logic Layer — TechXpress.Services
-
-Responsible for:
-- Business rules and validation.
-- Cart calculations and discounts.
-- Order processing.
-- Inventory and stock rules.
-- Product and category operations.
-- Payment workflow coordination.
-
-### 3. Data Access Layer — TechXpress.Data
-
-Responsible for:
-- Entity Framework Core configuration.
-- Database entities and migrations.
-- Generic and specialized repositories.
-- Unit of Work implementation.
-- Database queries and persistence.
-
-## 🧩 Design Patterns
-
-### N-Tier Architecture
-
-Separates presentation, business logic, and data access to improve maintainability and organization.
-
-### Repository Pattern
-
-Provides a consistent abstraction for database operations and separates data access from business logic.
-
-### Unit of Work Pattern
-
-Coordinates related repository operations and supports consistent database transactions. Entity Framework Core's `DbContext` already provides unit-of-work behavior, so the implementation will coordinate its repositories around a shared context.
-
-### Dependency Injection
-
-Uses ASP.NET Core's built-in dependency injection container to provide services and repositories to controllers and other application components.
-
-## 🗄️ Database Design
-
-The initial database design includes the following entities:
-
-| Entity | Description |
-|---|---|
-| Products | Product details, prices, stock, and images |
-| Categories | Product categories |
-| Users | Customer and administrator accounts |
-| Orders | Order information and status |
-| OrderDetails | Items, quantities, and prices per order |
-| PaymentTransactions | Payment references and statuses |
-
-Relationships, keys, constraints, and additional fields will be finalized during implementation.
-
-## ✨ Main Features
-
-### Customer Features
-- User registration, login, and logout.
-- Product browsing and category filtering.
-- Product search and details.
-- Shopping cart management.
-- Checkout and order placement.
-- Secure payment processing through Stripe.
-- Customer profiles and order history.
-
-### Administrator Features
-- Admin dashboard.
-- Product creation, editing, and deletion.
-- Category management.
-- Order management and status updates.
-- Inventory management.
-- Search, sorting, filtering, and pagination using DataTables.
-- Role-based access control.
-
-## 📅 Development Roadmap
-
-### Week 1 — Initial Setup and Product Listings
-- Set up the solution and N-Tier projects.
-- Configure Entity Framework Core and the database.
-- Implement repositories and Unit of Work.
-- Configure ASP.NET Core Identity.
-- Build product listings, search, and filters.
-
-### Week 2 — Shopping Cart and Admin Panel
-- Implement session-based shopping cart functionality.
-- Configure Customer and Admin roles.
-- Develop product and category management.
-- Build the admin dashboard.
-- Test cart operations and authorization.
-
-### Week 3 — Orders, Payments, and Profiles
-- Implement checkout and order placement.
-- Integrate Stripe test payments.
-- Handle stock updates and order consistency.
-- Develop customer profiles and order history.
-- Test payment and order workflows.
-
-### Week 4 — Testing and Deployment
-- Improve the responsive user interface.
-- Integrate DataTables and notifications.
-- Perform functional and security testing.
-- Deploy to the selected hosting platform.
-- Complete technical documentation and the user manual.
+TechXpress/
+├── TechXpress.Data/           # Data Layer
+│   ├── Models/                # Entity Models
+│   ├── Repositories/          # Data Access
+│   └── UnitOfWork/           # Transaction Management
+├── TechXpress.Services/       # Business Layer
+│   ├── CartItemsService/      # Shopping Cart Logic
+│   ├── OrdersService/         # Order Processing
+│   ├── ProductsService/       # Product Management
+│   └── CustomersService/      # Customer Management
+└── TechXpress.Web/           # Presentation Layer
+    ├── Areas/                 # Feature Areas
+    │   └── Admin/            # Admin Dashboard
+    ├── Controllers/          # Request Handling
+    ├── Views/                # UI Templates
+    └── wwwroot/             # Static Files
+```
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-
-Install the following tools before running the project:
-
-- .NET 8 SDK
-- Visual Studio 2022 or a compatible IDE
-- SQL Server or SQL Server LocalDB
-- Git
-- A Stripe test account for payment development
+- .NET 8.0 SDK
+- SQL Server
+- Visual Studio 2022/VS Code
+- Node.js (for frontend tools)
 
 ### Installation
-
-**1. Clone the repository**
-
+1. Clone the repository
 ```bash
-git clone https://github.com/TechXpressTeam/TechXpress.git
-cd TechXpress
+git clone https://github.com/eng-yossef/TechXpress.git
 ```
 
-**2. Configure the database connection**
+2. Update database connection in `appsettings.json`
 
-Add your database connection string to the appropriate configuration file or user secrets.
-
-Never commit real passwords, API keys, or production secrets to GitHub.
-
-**3. Apply Entity Framework Core migrations**
-
-After configuring the actual startup project and `DbContext`, run the appropriate migrations:
-
+3. Apply migrations
 ```bash
 dotnet ef database update
 ```
 
-**4. Run the application**
-
-After the solution and projects have been created:
-
+4. Run the application
 ```bash
-dotnet run --project TechXpress.Web
+dotnet run
 ```
 
-The exact commands and configuration may be adjusted to match the final project structure.
+## 🔒 Security Features
+- HTTPS enforcement
+- CSRF protection
+- SQL injection prevention
+- Password hashing
+- Role-based authorization
+- Two-factor authentication
 
-## 🔐 Security Considerations
+## 📱 Responsive Design
+- Mobile-first approach
+- Responsive navigation
+- Touch-friendly interfaces
+- Optimized images
+- Flexible layouts
 
-- Use ASP.NET Core Identity for account management.
-- Protect administrative routes with role-based authorization.
-- Validate all user inputs on the server.
-- Store secrets using User Secrets or secure deployment configuration.
-- Use HTTPS in production.
-- Verify Stripe payment results on the server.
-- Avoid storing raw card details.
-- Apply appropriate authorization checks to orders and customer data.
+## 🎨 UI Features
+- Dark/Light mode
+- Toast notifications
+- Loading indicators
+- Image zoom
+- Rating stars
+- Form validation
 
-## 👥 Team Collaboration
+## 📈 Analytics & Reporting
+- Sales reports
+- Inventory analytics
+- Customer behavior tracking
+- Performance metrics
+- Export functionality
 
-This project is managed using Git and GitHub.
+## 🔧 Configuration
+Key files:
+- `appsettings.json`: Application settings
+- `Program.cs`: Startup configuration
+- `_Layout.cshtml`: Main template
 
-Recommended workflow:
+Set private credentials locally with .NET user-secrets or environment variables instead of committing them. Supported environment variable names include `AI__ApiKey`, `Stripe__SecretKey`, `Stripe__PublishableKey`, `EmailSettings__FromAddress`, `EmailSettings__Username`, and `EmailSettings__Password`.
 
-1. Assign each feature to a team member.
-2. Create a separate branch for each task.
-3. Commit changes with clear messages.
-4. Push the branch to GitHub.
-5. Open a Pull Request for review.
-6. Merge approved changes into `main`.
-
-Example branch names:
-
-```text
-feature/product-listing
-feature/identity-authentication
-feature/shopping-cart
-feature/admin-dashboard
-feature/stripe-payments
-```
-
-## 🧪 Testing Strategy
-
-Testing will cover:
-
-- Product browsing and search.
-- User registration and login.
-- Customer and administrator permissions.
-- Shopping cart calculations.
-- Stock validation and order creation.
-- Stripe test payments and payment failures.
-- Admin product and order management.
-- Input validation and access control.
-
-## ☁️ Deployment
-
-The application is planned for deployment to Microsoft Azure or Hostinger, depending on hosting compatibility and project requirements.
-
-Production deployment will require appropriate database hosting, HTTPS, environment configuration, secure payment settings, and database backups.
-
-## 📚 Documentation
-
-Project documentation will cover:
-
-- System architecture.
-- Database schema and entity relationships.
-- Repository and Unit of Work implementation.
-- API or application endpoints where applicable.
-- Installation and configuration.
-- User and administrator guides.
-- Testing and deployment procedures.
-
-## 📄 Project Status
-
-**Current phase:** Initial setup and architecture planning.
-
-Features and deployment status will be updated as development progresses.
-
-## 📜 License
-
-This project is developed for academic and educational purposes. Licensing and redistribution terms will be defined by the project team.
+## 📞 Contact
+For support or inquiries:
+- Email: yossefkhaled551@gmail.com
+- Phone: 01150648044
 
 ---
-
-<p align="center">
-  <strong>TechXpress — Fast. Smart. Reliable.</strong>
-</p>
+Built with ❤️ by the TechXpress Team

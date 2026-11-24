@@ -1,0 +1,173 @@
+﻿@using TechXpress.Data.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model ProductViewModel
+
+@{
+    ViewData["Title"] = "Edit Product";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="mb-4">Edit Product</h2>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form asp-action="Edit" enctype="multipart/form-data" id="product-form">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="Price" class="form-label"></label>
+                    <input asp-for="Price" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="StockQuantity" class="form-label"></label>
+                    <input asp-for="StockQuantity" class="form-control" />
+                    <span asp-validation-for="StockQuantity" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="CategoryId" class="form-label"></label>
+                <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories">
+                    <option value="">-- Select Category --</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="SKU" class="form-label"></label>
+                <input asp-for="SKU" class="form-control" />
+                <span asp-validation-for="SKU" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Product Image</label>
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <div class="mb-2">
+                        <img src="@Model.ImageUrl" alt="Current Product image" class="img-thumbnail" style="max-height: 150px;" />
+                        <input type="hidden" asp-for="ImageUrl" />
+                    </div>
+                }
+                <input type="file" name="imageFile" class="form-control" accept="image/*" />
+                <span class="text-danger">@Html.ValidationMessage("imageFile")</span>
+            </div>
+
+            <div class="mb-4">
+                <h5 class="mb-2">Specifications</h5>
+                <div id="specifications-container">
+                    @if (Model.Specifications != null && Model.Specifications.Any())
+                    {
+                        @for (int i = 0; i < Model.Specifications.Count; i++)
+                        {
+                            <div class="specification-row row g-2 mb-2">
+                                <input type="hidden" asp-for="@Model.Specifications[i].Id" />
+                                <input type="hidden" asp-for="@Model.Specifications[i].ProductId" />
+                                <div class="col-md-5">
+                                    <input asp-for="@Model.Specifications[i].Key" class="form-control" placeholder="Key" />
+                                    <span asp-validation-for="@Model.Specifications[i].Key" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-5">
+                                    <input asp-for="@Model.Specifications[i].Value" class="form-control" placeholder="Value" />
+                                    <span asp-validation-for="@Model.Specifications[i].Value" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger w-100 remove-specification">Remove</button>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                <button type="button" id="add-specification" class="btn btn-outline-secondary">+ Add Specification</button>
+            </div>
+
+            <div class="form-check mb-2">
+                <input class="form-check-input" asp-for="IsFeatured" />
+                <label class="form-check-label" for="IsFeatured">@Html.DisplayNameFor(model => model.IsFeatured)</label>
+            </div>
+
+            <div class="form-check mb-4">
+                <input class="form-check-input" asp-for="IsActive" />
+                <label class="form-check-label" for="IsActive">@Html.DisplayNameFor(model => model.IsActive)</label>
+            </div>
+
+            <div class="d-flex gap-2">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(function () {
+            $('#add-specification').click(function () {
+                var container = $('#specifications-container');
+                var index = container.children('.specification-row').length;
+
+                var newRow = `
+                    <div class="specification-row row g-2 mb-2">
+                        <input type="hidden" name="Specifications[${index}].Id" value="0" />
+                        <input type="hidden" name="Specifications[${index}].ProductId" value="@Model.Id" />
+                        <div class="col-md-5">
+                            <input type="text" name="Specifications[${index}].Key" class="form-control" placeholder="Key" required />
+                            <span class="text-danger field-validation-valid"
+                                  data-valmsg-for="Specifications[${index}].Key" data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="text" name="Specifications[${index}].Value" class="form-control" placeholder="Value" required />
+                            <span class="text-danger field-validation-valid"
+                                  data-valmsg-for="Specifications[${index}].Value" data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger w-100 remove-specification">Remove</button>
+                        </div>
+                    </div>`;
+                container.append(newRow);
+                $.validator.unobtrusive.parse("#product-form");
+            });
+
+            $(document).on('click', '.remove-specification', function () {
+                $(this).closest('.specification-row').remove();
+                reindexSpecifications();
+            });
+
+            function reindexSpecifications() {
+                $('#specifications-container .specification-row').each(function (index) {
+                    $(this).find('input[name$=".Id"]').attr('name', `Specifications[${index}].Id`);
+                    $(this).find('input[name$=".ProductId"]').attr('name', `Specifications[${index}].ProductId`);
+                    $(this).find('input[name$=".Key"]').attr('name', `Specifications[${index}].Key`);
+                    $(this).find('input[name$=".Value"]').attr('name', `Specifications[${index}].Value`);
+
+                    $(this).find('span[data-valmsg-for]').each(function () {
+                        var original = $(this).attr('data-valmsg-for');
+                        var updated = original.replace(/Specifications\[\d+\]/, `Specifications[${index}]`);
+                        $(this).attr('data-valmsg-for', updated);
+                    });
+                });
+                $.validator.unobtrusive.parse("#product-form");
+            }
+        });
+    </script>
+}

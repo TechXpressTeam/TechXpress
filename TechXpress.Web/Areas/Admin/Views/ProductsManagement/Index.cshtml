@@ -1,0 +1,321 @@
+﻿@using TechXpress.Data.Models
+@model IEnumerable<ProductViewModel>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Products Management";
+    var categories = ViewBag.Categories as IEnumerable<Category> ?? new List<Category>();
+}
+
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <h2>@ViewData["Title"]</h2>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="fas fa-plus-circle"></i> Add New Product
+    </a>
+</div>
+
+<!-- Filter Card -->
+<div class="card mb-4 shadow-sm">
+    <div class="card-header bg-light">
+        <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filters</h5>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <!-- Name Search -->
+            <div class="col-md-3">
+                <label for="nameFilter" class="form-label">Product Name</label>
+                <input type="text" class="form-control" id="nameFilter" placeholder="Search by name">
+            </div>
+
+            <!-- Category Filter -->
+            <div class="col-md-3">
+                <label for="categoryFilter" class="form-label">Category</label>
+                <select class="form-select" id="categoryFilter">
+                    <option value="">All Categories</option>
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Price Range -->
+            <div class="col-md-3">
+                <label for="priceMinFilter" class="form-label">Price Range</label>
+                <div class="input-group">
+                    <input type="number" class="form-control" id="priceMinFilter" placeholder="Min" min="0">
+                    <span class="input-group-text">to</span>
+                    <input type="number" class="form-control" id="priceMaxFilter" placeholder="Max" min="0">
+                </div>
+            </div>
+
+            <!-- Stock Status -->
+            <div class="col-md-3">
+                <label for="stockFilter" class="form-label">Stock Status</label>
+                <select class="form-select" id="stockFilter">
+                    <option value="">All</option>
+                    <option value="inStock">In Stock (>10)</option>
+                    <option value="lowStock">Low Stock (1-10)</option>
+                    <option value="outOfStock">Out of Stock (0)</option>
+                </select>
+            </div>
+
+            <!-- Active Status -->
+            <div class="col-md-3">
+                <label for="statusFilter" class="form-label">Status</label>
+                <select class="form-select" id="statusFilter">
+                    <option value="">All</option>
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="col-md-3 d-flex align-items-end">
+                <button id="resetFilters" class="btn btn-outline-secondary me-2 w-100">
+                    <i class="fas fa-times me-2"></i>Reset
+                </button>
+                <button id="applyFilters" class="btn btn-primary w-100">
+                    <i class="fas fa-filter me-2"></i>Apply
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">Product List</h4>
+        <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-download"></i> Export
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown">
+                <li><a class="dropdown-item" href="#" id="export-csv"><i class="fas fa-file-csv"></i> CSV</a></li>
+                <li><a class="dropdown-item" href="#" id="export-excel"><i class="fas fa-file-excel"></i> Excel</a></li>
+                <li><a class="dropdown-item" href="#" id="export-pdf"><i class="fas fa-file-pdf"></i> PDF</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="productsTable" class="table table-hover" style="width:100%">
+                <thead class="table-light">
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr data-name="@item.Name.ToLower()"
+                            data-category="@item.Category?.Id"
+                            data-price="@item.Price"
+                            data-stock="@item.StockQuantity"
+                            data-status="@item.IsActive.ToString().ToLower()">
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.Name" class="product-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal" data-image="@item.ImageUrl" />
+                                }
+                                else
+                                {
+                                    <div class="no-image-placeholder">
+                                        <i class="fas fa-camera"></i>
+                                    </div>
+                                }
+                            </td>
+                            <td>@item.Name</td>
+                            <td>@item.Category?.Name</td>
+                            <td>@item.Price.ToString("C")</td>
+                            <td>
+                                <span class="badge @(item.StockQuantity > 10 ? "bg-success" : item.StockQuantity > 0 ? "bg-warning" : "bg-danger")">
+                                    @item.StockQuantity
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge @(item.IsActive ? "bg-success" : "bg-secondary")">
+                                    @(item.IsActive ? "Active" : "Inactive")
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info" title="Details">
+                                        <i class="fas fa-info-circle"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" title="Delete">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Image Preview Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Product Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" class="img-fluid" alt="Product Image">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .product-thumbnail {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+            .product-thumbnail:hover {
+                transform: scale(1.1);
+            }
+
+        .no-image-placeholder {
+            width: 50px;
+            height: 50px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #adb5bd;
+        }
+
+        .badge {
+            font-weight: 500;
+            padding: 0.35em 0.65em;
+            font-size: 0.85em;
+        }
+
+        .table th {
+            white-space: nowrap;
+        }
+
+        .btn-group-sm > .btn {
+            padding: 0.25rem 0.5rem;
+        }
+
+        .filter-card {
+            margin-bottom: 1.5rem;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Image modal functionality
+            $('#imageModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var imageUrl = button.data('image');
+                $('#modalImage').attr('src', imageUrl);
+            });
+
+            // Filter function
+            function filterProducts() {
+                const nameFilter = $('#nameFilter').val().toLowerCase();
+                const categoryFilter = $('#categoryFilter').val();
+                const priceMin = parseFloat($('#priceMinFilter').val()) || 0;
+                const priceMax = parseFloat($('#priceMaxFilter').val()) || Infinity;
+                const stockFilter = $('#stockFilter').val();
+                const statusFilter = $('#statusFilter').val();
+
+                let hasResults = false;
+
+                $('#productsTable tbody tr').each(function() {
+                    const name = $(this).data('name');
+                    const category = $(this).data('category')?.toString();
+                    const price = parseFloat($(this).data('price'));
+                    const stock = parseInt($(this).data('stock'));
+                    const status = $(this).data('status');
+
+                    // Check filters
+                    const nameMatch = name.includes(nameFilter) || nameFilter === '';
+                    const categoryMatch = categoryFilter === '' || category === categoryFilter;
+                    const priceMatch = price >= priceMin && price <= priceMax;
+
+                    let stockMatch = true;
+                    if (stockFilter === 'inStock') stockMatch = stock > 10;
+                    else if (stockFilter === 'lowStock') stockMatch = stock > 0 && stock <= 10;
+                    else if (stockFilter === 'outOfStock') stockMatch = stock === 0;
+
+                    const statusMatch = statusFilter === '' || status === statusFilter.toLowerCase();
+
+                    if (nameMatch && categoryMatch && priceMatch && stockMatch && statusMatch) {
+                        $(this).show();
+                        hasResults = true;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                // Show/hide no results message
+                if (!hasResults) {
+                    $('#noResults').show();
+                } else {
+                    $('#noResults').hide();
+                }
+            }
+
+            // Event listeners
+            $('#applyFilters').click(filterProducts);
+            $('#resetFilters').click(function() {
+                $('#nameFilter').val('');
+                $('#categoryFilter').val('');
+                $('#priceMinFilter').val('');
+                $('#priceMaxFilter').val('');
+                $('#stockFilter').val('');
+                $('#statusFilter').val('');
+                filterProducts();
+            });
+
+            // Filter when Enter is pressed in search
+            $('#nameFilter').keypress(function(e) {
+                if (e.which === 13) {
+                    filterProducts();
+                }
+            });
+
+            // Initialize DataTable without filtering (we're using our custom filters)
+            $('#productsTable').DataTable({
+                dom: '<"top"f>rt<"bottom"lip><"clear">',
+                responsive: true,
+                columnDefs: [
+                    { orderable: false, targets: [0, 6] } // Image and Actions columns
+                ]
+            });
+
+            // No results message (initially hidden)
+            $('#productsTable').after('<div id="noResults" class="alert alert-info mt-3" style="display: none;">No products match your filters.</div>');
+        });
+    </script>
+}

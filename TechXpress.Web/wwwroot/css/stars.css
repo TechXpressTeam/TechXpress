@@ -1,0 +1,34 @@
+﻿
+.rating-input {
+    display: inline-block;
+}
+
+.rating-stars {
+    display: flex;
+    flex-direction: row-reverse; /* Maintains left-to-right selection */
+    justify-content: flex-end;
+}
+
+.rating-input input[type="radio"] {
+    display: none;
+}
+
+.rating-input label {
+    color: #ddd;
+    font-size: 1.5rem;
+    padding: 0 3px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+    /* Hover effect - color current and preceding stars */
+    .rating-input label:hover,
+    .rating-input label:hover ~ label {
+        color: #ffc107;
+    }
+
+/* Selection styling - keeps stars colored after selection */
+.rating-input input[type="radio"]:checked ~ label,
+.rating-input input[type="radio"]:checked + label {
+    color: #ffc107;
+}

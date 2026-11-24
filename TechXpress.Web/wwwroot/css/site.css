@@ -1,0 +1,149 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+/* Product Cards */
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #dee2e6;
+}
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+.badge-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1;
+}
+
+.badge-featured {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-new {
+    background-color: #28a745;
+    color: white;
+}
+
+/* Rating Stars */
+.rating {
+    color: #ffc107;
+}
+
+/* Price Range Slider */
+.ui-slider {
+    height: 6px;
+    background: #dee2e6;
+    border-radius: 3px;
+}
+
+.ui-slider-range {
+    background: #007bff;
+}
+
+.ui-slider-handle {
+    width: 16px;
+    height: 16px;
+    background: #007bff;
+    border-radius: 50%;
+    border: none;
+    top: -5px;
+    cursor: pointer;
+}
+
+/* Quick View Modal */
+#quickViewModal .modal-dialog {
+    max-width: 800px;
+}
+
+/* Product Tabs */
+.nav-tabs .nav-link.active {
+    font-weight: bold;
+    border-bottom: 3px solid #007bff;
+}
+
+/* Search Autocomplete */
+.ui-autocomplete {
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.search-thumbnail {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+
+
+
+/* Cart page styles */
+.cart-item-image {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+/* Checkout page styles */
+#billing-address {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 0.25rem;
+}
+
+/* Cart dropdown styles */
+.cart-dropdown-image {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.cart-dropdown-items {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Quantity input styles */
+.quantity-input {
+    max-width: 50px;
+    text-align: center;
+}
+
+/* Empty cart styles */
+.empty-cart-icon {
+    opacity: 0.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .cart-item-image {
+        width: 60px;
+        height: 60px;
+    }
+}
