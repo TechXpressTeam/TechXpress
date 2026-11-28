@@ -184,7 +184,7 @@ Set private credentials locally with .NET user-secrets or environment variables 
  
  **Trainer:** 
  
- Eyad Ali
+ENG: Eyad Ali
 
 
 **Company:** 
