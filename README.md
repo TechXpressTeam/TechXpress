@@ -182,10 +182,14 @@ Set private credentials locally with .NET user-secrets or environment variables 
 - Mohamed Mahmoud Abdelrhman
 
  
- **Trainer:** Eyad Ali
+ **Trainer:** 
+ 
+ Eyad Ali
 
 
-**Company:** YAT Learning Centers
+**Company:** 
+
+YAT Learning Centers
 
 ## 📞 Contact
 
